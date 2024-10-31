@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-accommodations-table
+      author: dmytrosokolovskyi
+      changes:
+        - createTable:
+            tableName: accommodations
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: type_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_accommodations_accommodation_types
+                    referencedTableName: accommodation_types
+                    referencedColumnNames: id
+              - column:
+                  name: location_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_accommodations_addresses
+                    referencedTableName: addresses
+                    referencedColumnNames: id
+              - column:
+                  name: size
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: daily_rate
+                  type: decimal(19, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: availability
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

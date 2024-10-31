@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-amenity-types
+      author: dmytrosokolovskyi
+      changes:
+        - insert:
+            tableName: amenity_types
+            columns:
+              - column:
+                  name: name
+                  value: PARKING
+        - insert:
+            tableName: amenity_types
+            columns:
+              - column:
+                  name: name
+                  value: CAR_CHARGER
+        - insert:
+            tableName: amenity_types
+            columns:
+              - column:
+                  name: name
+                  value: PETS
+        - insert:
+            tableName: amenity_types
+            columns:
+              - column:
+                  name: name
+                  value: WI_FI
+        - insert:
+            tableName: amenity_types
+            columns:
+              - column:
+                  name: name
+                  value: POOL
+        - insert:
+            tableName: amenity_types
+            columns:
+              - column:
+                  name: name
+                  value: SPA
+        - insert:
+            tableName: amenity_types
+            columns:
+              - column:
+                  name: name
+                  value: GYM
+        - insert:
+            tableName: amenity_types
+            columns:
+              - column:
+                  name: name
+                  value: CAFE
