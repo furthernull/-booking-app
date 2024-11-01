@@ -13,3 +13,11 @@ databaseChangeLog:
       file: db/changelog/changes/06-create-accommodations-table.yaml
   - include:
       file: db/changelog/changes/07-create-accommodations-amenity-types-table.yaml
+  - include:
+      file: db/changelog/changes/08-create-roles-table.yaml
+  - include:
+      file: db/changelog/changes/09-insert-roles.yaml
+  - include:
+      file: db/changelog/changes/10-create-users-table.yaml
+  - include:
+      file: db/changelog/changes/11-create-users-roles-table.yaml
