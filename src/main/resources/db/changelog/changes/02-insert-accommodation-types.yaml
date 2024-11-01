@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-accommodation-types
+      author: dmytrosokolovskyi
+      changes:
+        - insert:
+            tableName: accommodation_types
+            columns:
+              - column:
+                  name: name
+                  value: HOUSE
+        - insert:
+            tableName: accommodation_types
+            columns:
+              - column:
+                  name: name
+                  value: APARTMENT
+        - insert:
+            tableName: accommodation_types
+            columns:
+              - column:
+                  name: name
+                  value: CONDO
+        - insert:
+            tableName: accommodation_types
+            columns:
+              - column:
+                  name: name
+                  value: VACATION_HOME
