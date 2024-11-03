@@ -21,3 +21,9 @@ databaseChangeLog:
       file: db/changelog/changes/10-create-users-table.yaml
   - include:
       file: db/changelog/changes/11-create-users-roles-table.yaml
+  - include:
+      file: db/changelog/changes/12-create-booking-statuses-table.yaml
+  - include:
+      file: db/changelog/changes/13-insert-booking-statuses.yaml
+  - include:
+      file: db/changelog/changes/14-create-bookings-table.yaml

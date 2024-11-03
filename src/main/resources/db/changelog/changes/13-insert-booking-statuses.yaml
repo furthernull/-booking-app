@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-booking-statuses
+      author: dmytrosokolovskyi
+      changes:
+        - insert:
+            tableName: booking_statuses
+            columns:
+              - column:
+                  name: status
+                  value: PENDING
+        - insert:
+            tableName: booking_statuses
+            columns:
+              - column:
+                  name: status
+                  value: CONFIRMED
+        - insert:
+            tableName: booking_statuses
+            columns:
+              - column:
+                  name: status
+                  value: CANCELLED
+        - insert:
+            tableName: booking_statuses
+            columns:
+              - column:
+                  name: status
+                  value: EXPIRED
