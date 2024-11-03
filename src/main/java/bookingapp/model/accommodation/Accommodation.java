@@ -16,11 +16,13 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -52,4 +54,8 @@ public class Accommodation {
     private Integer availability;
     @Column(nullable = false)
     private boolean isDeleted = false;
+
+    public Accommodation(Long id) {
+        this.id = id;
+    }
 }
