@@ -8,9 +8,11 @@ import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
-public interface BookingRepository extends JpaRepository<Booking, Long> {
+public interface BookingRepository
+        extends JpaRepository<Booking, Long>, JpaSpecificationExecutor<Booking> {
     @EntityGraph(attributePaths = {"accommodation", "user", "status"})
     List<Booking> findAllByUserId(Long userId, Pageable pageable);
 

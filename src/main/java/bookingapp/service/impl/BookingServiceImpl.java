@@ -1,5 +1,6 @@
 package bookingapp.service.impl;
 
+import bookingapp.dto.booking.BookingFilterParameters;
 import bookingapp.dto.booking.BookingRequestDto;
 import bookingapp.dto.booking.BookingResponseDto;
 import bookingapp.dto.booking.BookingUpdateRequestDto;
@@ -10,6 +11,7 @@ import bookingapp.model.booking.Booking;
 import bookingapp.model.booking.BookingStatus;
 import bookingapp.model.user.User;
 import bookingapp.repository.booking.BookingRepository;
+import bookingapp.repository.booking.BookingSpecificationBuilder;
 import bookingapp.repository.bookinstatus.BookingStatusRepository;
 import bookingapp.service.BookingService;
 import java.time.LocalDate;
@@ -17,6 +19,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
     private final BookingStatusRepository bookingStatusRepository;
+    private final BookingSpecificationBuilder bookingSpecificationBuilder;
 
     @Override
     @Transactional
@@ -53,9 +57,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getAll(
+    public List<BookingResponseDto> filter(
+            BookingFilterParameters filterParameters,
             Pageable pageable) {
-        Page<Booking> bookings = bookingRepository.findAll(pageable);
+        Specification<Booking> bookingSpecification
+                = bookingSpecificationBuilder.build(filterParameters);
+        Page<Booking> bookings = bookingRepository.findAll(bookingSpecification, pageable);
         return bookingMapper.toDto(bookings);
     }
 
@@ -66,8 +73,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponseDto getBookingById(Long id) {
-        Booking booking = bookingRepository.findById(id).orElseThrow(
+    public BookingResponseDto getBookingByIdAndUserId(Long id, Long userId) {
+        Booking booking = bookingRepository.findByIdAndUserId(id, userId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find Booking with id " + id)
         );
         return bookingMapper.toDto(booking);
