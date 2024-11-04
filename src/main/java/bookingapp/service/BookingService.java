@@ -1,5 +1,6 @@
 package bookingapp.service;
 
+import bookingapp.dto.booking.BookingFilterParameters;
 import bookingapp.dto.booking.BookingRequestDto;
 import bookingapp.dto.booking.BookingResponseDto;
 import bookingapp.dto.booking.BookingUpdateRequestDto;
@@ -10,12 +11,11 @@ import org.springframework.data.domain.Pageable;
 public interface BookingService {
     BookingResponseDto createBooking(User user, BookingRequestDto requestDto);
 
-    List<BookingResponseDto> getAll(
-            Pageable pageable);
+    List<BookingResponseDto> filter(BookingFilterParameters filterParameters, Pageable pageable);
 
     List<BookingResponseDto> getBookingsByUserId(Long userId, Pageable pageable);
 
-    BookingResponseDto getBookingById(Long id);
+    BookingResponseDto getBookingByIdAndUserId(Long id, Long userId);
 
     BookingResponseDto updateBooking(Long id, Long userId, BookingUpdateRequestDto requestDto);
 
