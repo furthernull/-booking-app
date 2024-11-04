@@ -6,12 +6,14 @@ import bookingapp.dto.accommodation.AccommodationRequestDto;
 import bookingapp.model.accommodation.Accommodation;
 import bookingapp.model.accommodation.AmenityType;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 @Mapper(config = MapperConfig.class, uses = AddressMapper.class)
 public interface AccommodationMapper {
@@ -34,7 +36,7 @@ public interface AccommodationMapper {
     }
 
     @Mapping(source = "accommodationTypeId", target = "type.id")
-    @Mapping(target = "location", ignore = true)
+    @Mapping(source = "address", target = "location")
     @Mapping(target = "amenities", ignore = true)
     Accommodation toModel(AccommodationRequestDto requestDto);
 
@@ -54,4 +56,11 @@ public interface AccommodationMapper {
     @Mapping(target = "location", source = "address")
     void updateModel(@MappingTarget Accommodation accommodation,
                      AccommodationRequestDto requestDto);
+
+    @Named("accommodationById")
+    default Accommodation accommodationById(Long id) {
+        return Optional.ofNullable(id)
+                .map(Accommodation::new)
+                .orElse(null);
+    }
 }

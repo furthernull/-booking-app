@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-booking-statuses-table
+      author: dmytrosokolovskyi
+      changes:
+        - createTable:
+            tableName: booking_statuses
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
