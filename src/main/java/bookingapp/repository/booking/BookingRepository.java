@@ -19,7 +19,7 @@ public interface BookingRepository
     @EntityGraph(attributePaths = {"accommodation", "user", "status"})
     Optional<Booking> findByIdAndUserId(Long id, Long userId);
 
-    @Query("SELECT b FROM Booking AS b WHERE b.accommodation.id = :accommodationId "
+    @Query("SELECT b FROM Booking b WHERE b.accommodation.id = :accommodationId "
             + "AND b.status.status != :cancelledStatus "
             + "AND b.isDeleted = FALSE "
             + "AND (b.checkInDate < :endDate AND b.checkOutDate > :startDate)")
