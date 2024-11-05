@@ -42,7 +42,7 @@ public class BookingController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/")
+    @GetMapping
     public List<BookingResponseDto> getBookingsByIdAndStatus(
             @RequestParam(name = "user_id", required = false) Long userId,
             @RequestParam(name = "status") BookingStatus.Status status,

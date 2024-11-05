@@ -6,6 +6,7 @@ import bookingapp.dto.booking.BookingResponseDto;
 import bookingapp.dto.booking.BookingUpdateRequestDto;
 import bookingapp.exception.AccommodationAvailabilityException;
 import bookingapp.exception.EntityNotFoundException;
+import bookingapp.exception.IllegalStateBookingException;
 import bookingapp.mapper.BookingMapper;
 import bookingapp.model.booking.Booking;
 import bookingapp.model.booking.BookingStatus;
@@ -106,8 +107,11 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public void cancelBooking(Long id, Long userId) {
         Booking booking = bookingRepository.findByIdAndUserId(id, userId).orElseThrow(
-                () -> new EntityNotFoundException("Can't delete Booking with id " + id)
+                () -> new EntityNotFoundException("Can't cancel Booking with id " + id)
         );
+        if (booking.getStatus().getStatus().equals(CANCELLED_STATUS)) {
+            throw new IllegalStateBookingException("Booking has already been canceled");
+        }
         BookingStatus status = bookingStatusRepository.findByStatus(CANCELLED_STATUS)
                 .orElseThrow(
                         () -> new EntityNotFoundException("Can't retrieve Status CANCELED")
