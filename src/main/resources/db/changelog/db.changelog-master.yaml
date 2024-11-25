@@ -27,3 +27,5 @@ databaseChangeLog:
       file: db/changelog/changes/13-insert-booking-statuses.yaml
   - include:
       file: db/changelog/changes/14-create-bookings-table.yaml
+  - include:
+      file: db/changelog/changes/15-create-telegram-chats-table.yaml
