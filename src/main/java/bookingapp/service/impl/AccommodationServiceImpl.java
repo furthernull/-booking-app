@@ -9,6 +9,7 @@ import bookingapp.model.accommodation.Address;
 import bookingapp.repository.accommodation.AccommodationRepository;
 import bookingapp.service.AccommodationService;
 import bookingapp.service.AddressService;
+import bookingapp.service.NotificationService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +21,16 @@ public class AccommodationServiceImpl implements AccommodationService {
     private final AccommodationRepository accommodationRepository;
     private final AccommodationMapper accommodationMapper;
     private final AddressService addressService;
+    private final NotificationService notificationService;
 
     @Override
     public AccommodationDto create(AccommodationRequestDto requestDto) {
         Accommodation accommodation = accommodationMapper.toModel(requestDto);
         Address location = addressService.save(requestDto.address());
         accommodation.setLocation(location);
-        return accommodationMapper.toDto(accommodationRepository.save(accommodation));
+        accommodationRepository.save(accommodation);
+        notificationService.sendNotification(accommodation.getId());
+        return accommodationMapper.toDto(accommodation);
     }
 
     @Override

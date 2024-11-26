@@ -5,6 +5,7 @@ import bookingapp.dto.user.UserResponseDto;
 import bookingapp.dto.user.UserUpdateRequestDto;
 import bookingapp.dto.user.UserUpdateRoleRequestDto;
 import bookingapp.exception.RegistrationException;
+import bookingapp.model.telegram.TelegramChat;
 
 public interface UserService {
     UserResponseDto register(UserRegistrationRequestDto requestDto)
@@ -15,4 +16,8 @@ public interface UserService {
     UserResponseDto getInfo(Long id);
 
     UserResponseDto updateUser(Long id, UserUpdateRequestDto requestDto);
+
+    TelegramChat subscribeToChat(Long chatId, String username);
+
+    void unsubscribeFromChat(Long chatId);
 }
