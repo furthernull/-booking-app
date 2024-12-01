@@ -54,8 +54,4 @@ public class Accommodation {
     private Integer availability;
     @Column(nullable = false)
     private boolean isDeleted = false;
-
-    public Accommodation(Long id) {
-        this.id = id;
-    }
 }

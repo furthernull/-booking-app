@@ -1,7 +1,10 @@
 package bookingapp.service;
 
-public interface NotificationService {
-    void sendNotification(Long userId, Long bookingId);
+import bookingapp.model.accommodation.Accommodation;
+import bookingapp.model.booking.Booking;
 
-    void sendNotification(Long accommodationId);
+public interface NotificationService {
+    void sendNotification(Long userId, Booking booking);
+
+    void sendNotification(Accommodation accommodation);
 }

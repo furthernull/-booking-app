@@ -8,9 +8,11 @@ import bookingapp.exception.AccommodationAvailabilityException;
 import bookingapp.exception.EntityNotFoundException;
 import bookingapp.exception.IllegalStateBookingException;
 import bookingapp.mapper.BookingMapper;
+import bookingapp.model.accommodation.Accommodation;
 import bookingapp.model.booking.Booking;
 import bookingapp.model.booking.BookingStatus;
 import bookingapp.model.user.User;
+import bookingapp.repository.accommodation.AccommodationRepository;
 import bookingapp.repository.booking.BookingRepository;
 import bookingapp.repository.booking.BookingSpecificationBuilder;
 import bookingapp.repository.bookingstatus.BookingStatusRepository;
@@ -23,18 +25,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
 public class BookingServiceImpl implements BookingService {
     private static final BookingStatus.Status PENDING_STATUS = BookingStatus.Status.PENDING;
     private static final BookingStatus.Status CANCELLED_STATUS = BookingStatus.Status.CANCELLED;
-    private final BookingRepository bookingRepository;
+    private final AccommodationRepository accommodationRepository;
     private final BookingMapper bookingMapper;
+    private final BookingRepository bookingRepository;
     private final BookingStatusRepository bookingStatusRepository;
     private final BookingSpecificationBuilder bookingSpecificationBuilder;
     private final NotificationService notificationService;
 
+    @Transactional
     @Override
     public BookingResponseDto createBooking(User user, BookingRequestDto requestDto) {
         if (!isAccommodationAvailable(
@@ -47,6 +52,7 @@ public class BookingServiceImpl implements BookingService {
                             + " - " + requestDto.checkOutDate());
         }
         Booking booking = bookingMapper.toModel(requestDto);
+        booking.setAccommodation(fetchAccommodation(requestDto.accommodationId()));
         booking.setUser(user);
         BookingStatus status = bookingStatusRepository.findByStatus(
                 PENDING_STATUS).orElseThrow(
@@ -54,7 +60,7 @@ public class BookingServiceImpl implements BookingService {
                                 "Can't retrieve status PENDING from DB"));
         booking.setStatus(status);
         bookingRepository.save(booking);
-        notificationService.sendNotification(user.getId(), booking.getId());
+        notificationService.sendNotification(user.getId(), booking);
         return bookingMapper.toDto(booking);
     }
 
@@ -114,7 +120,7 @@ public class BookingServiceImpl implements BookingService {
         BookingStatus status = bookingStatusRepository.findByStatus(CANCELLED_STATUS)
                 .orElseThrow(
                         () -> new EntityNotFoundException("Can't retrieve Status CANCELED")
-        );
+                );
         booking.setStatus(status);
         bookingRepository.save(booking);
     }
@@ -143,5 +149,9 @@ public class BookingServiceImpl implements BookingService {
                 .filter(b -> !b.getId().equals(id))
                 .findAny()
                 .isEmpty();
+    }
+
+    private Accommodation fetchAccommodation(Long accommodationId) {
+        return accommodationRepository.getReferenceById(accommodationId);
     }
 }

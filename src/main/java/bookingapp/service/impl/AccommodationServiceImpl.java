@@ -5,31 +5,43 @@ import bookingapp.dto.accommodation.AccommodationRequestDto;
 import bookingapp.exception.EntityNotFoundException;
 import bookingapp.mapper.AccommodationMapper;
 import bookingapp.model.accommodation.Accommodation;
+import bookingapp.model.accommodation.AccommodationType;
 import bookingapp.model.accommodation.Address;
+import bookingapp.model.accommodation.AmenityType;
 import bookingapp.repository.accommodation.AccommodationRepository;
+import bookingapp.repository.accommodationtype.AccommodationTypeRepository;
+import bookingapp.repository.amenity.AmenityRepository;
 import bookingapp.service.AccommodationService;
 import bookingapp.service.AddressService;
 import bookingapp.service.NotificationService;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
 public class AccommodationServiceImpl implements AccommodationService {
-    private final AccommodationRepository accommodationRepository;
     private final AccommodationMapper accommodationMapper;
+    private final AccommodationRepository accommodationRepository;
+    private final AccommodationTypeRepository accommodationTypeRepository;
     private final AddressService addressService;
+    private final AmenityRepository amenityRepository;
     private final NotificationService notificationService;
 
+    @Transactional
     @Override
     public AccommodationDto create(AccommodationRequestDto requestDto) {
         Accommodation accommodation = accommodationMapper.toModel(requestDto);
+        accommodation.setType(fetchAccommodationType(requestDto.accommodationTypeId()));
         Address location = addressService.save(requestDto.address());
         accommodation.setLocation(location);
+        accommodation.setAmenities(fetchAmenitiesByIds(requestDto.amenityIds()));
         accommodationRepository.save(accommodation);
-        notificationService.sendNotification(accommodation.getId());
+        notificationService.sendNotification(accommodation);
         return accommodationMapper.toDto(accommodation);
     }
 
@@ -58,5 +70,15 @@ public class AccommodationServiceImpl implements AccommodationService {
     @Override
     public void deleteById(Long id) {
         accommodationRepository.deleteById(id);
+    }
+
+    private AccommodationType fetchAccommodationType(Long accommodationTypeId) {
+        return accommodationTypeRepository.getReferenceById(accommodationTypeId);
+    }
+
+    private Set<AmenityType> fetchAmenitiesByIds(Set<Long> amenitiesIds) {
+        return amenitiesIds.stream()
+                .map(amenityRepository::getReferenceById)
+                .collect(Collectors.toSet());
     }
 }

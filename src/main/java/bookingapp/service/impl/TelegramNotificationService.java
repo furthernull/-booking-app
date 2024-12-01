@@ -6,8 +6,6 @@ import bookingapp.model.accommodation.Address;
 import bookingapp.model.accommodation.AmenityType;
 import bookingapp.model.booking.Booking;
 import bookingapp.model.telegram.TelegramChat;
-import bookingapp.repository.accommodation.AccommodationRepository;
-import bookingapp.repository.booking.BookingRepository;
 import bookingapp.repository.telegram.TelegramRepository;
 import bookingapp.service.NotificationService;
 import bookingapp.telegram.NotificationTemplates;
@@ -21,18 +19,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class TelegramNotificationService implements NotificationService {
     public static final String AMENITIES_DELIMITER = ", ";
-    private final AccommodationRepository accommodationRepository;
-    private final BookingRepository bookingRepository;
     private final TelegramBot telegramBot;
     private final TelegramRepository telegramRepository;
 
     @Override
-    public void sendNotification(Long userId, Long bookingId) {
+    public void sendNotification(Long userId, Booking booking) {
         TelegramChat userChat = telegramRepository.findByUserId(userId).orElseThrow(
                 () -> new EntityNotFoundException("Can't fetch TelegramChat from DB: " + userId));
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(
-                () -> new EntityNotFoundException(
-                        "Can't fetch Booking from DB: " + bookingId));
         if (userChat != null && userChat.isSubscribed()) {
             String notification = prepareNotification(userChat, booking);
             telegramBot.sendMessage(userChat.getChatId(), notification);
@@ -40,10 +33,7 @@ public class TelegramNotificationService implements NotificationService {
     }
 
     @Override
-    public void sendNotification(Long accommodationId) {
-        Accommodation accommodation = accommodationRepository.findById(accommodationId).orElseThrow(
-                () -> new EntityNotFoundException(
-                        "Can't fetch Accommodation from DB: " + accommodationId));
+    public void sendNotification(Accommodation accommodation) {
         String notification = prepareNotification(accommodation);
         telegramRepository.findAllByIsSubscribedIsTrue()
                 .forEach(c -> telegramBot.sendMessage(c.getChatId(), notification));
