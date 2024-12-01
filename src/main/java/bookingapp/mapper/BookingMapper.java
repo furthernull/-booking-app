@@ -10,10 +10,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(config = MapperConfig.class, uses = AccommodationMapper.class)
+@Mapper(config = MapperConfig.class)
 public interface BookingMapper {
-    @Mapping(target = "accommodation", source = "accommodationId",
-            qualifiedByName = "accommodationById")
+    @Mapping(target = "accommodation", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "status", ignore = true)
     Booking toModel(BookingRequestDto requestDto);

@@ -1,4 +1,4 @@
-package bookingapp.repository.bookinstatus;
+package bookingapp.repository.bookingstatus;
 
 import bookingapp.model.booking.BookingStatus;
 import java.util.Optional;

@@ -7,23 +7,27 @@ import bookingapp.dto.user.UserUpdateRoleRequestDto;
 import bookingapp.exception.EntityNotFoundException;
 import bookingapp.exception.RegistrationException;
 import bookingapp.mapper.UserMapper;
+import bookingapp.model.telegram.TelegramChat;
 import bookingapp.model.user.Role;
 import bookingapp.model.user.User;
 import bookingapp.repository.role.RoleRepository;
+import bookingapp.repository.telegram.TelegramRepository;
 import bookingapp.repository.user.UserRepository;
 import bookingapp.service.UserService;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final TelegramRepository telegramRepository;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto)
@@ -71,5 +75,32 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(requestDto.password()));
         userRepository.save(user);
         return userMapper.toDto(user);
+    }
+
+    @Override
+    @Transactional
+    public TelegramChat subscribeToChat(Long chatId, String username) {
+        User user = userRepository.findByEmail(username).orElseThrow(
+                () -> new EntityNotFoundException("Can't retrieve user "
+                        + "from DB with email " + username));
+        TelegramChat telegramChat = telegramRepository.findByChatId(chatId).orElseGet(
+                () -> {
+                    TelegramChat newTelegramChat = new TelegramChat();
+                    newTelegramChat.setChatId(chatId);
+                    newTelegramChat.setUser(user);
+                    return newTelegramChat;
+                }
+        );
+        telegramChat.setSubscribed(true);
+        return telegramRepository.saveAndFlush(telegramChat);
+    }
+
+    @Override
+    public void unsubscribeFromChat(Long chatId) {
+        TelegramChat telegramChat = telegramRepository.findByChatId(chatId).orElseThrow(
+                () -> new EntityNotFoundException("Can't retrieve telegram chat by id: " + chatId)
+        );
+        telegramChat.setSubscribed(false);
+        telegramRepository.save(telegramChat);
     }
 }

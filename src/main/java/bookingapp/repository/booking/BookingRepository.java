@@ -28,4 +28,13 @@ public interface BookingRepository
             LocalDate startDate,
             LocalDate endDate,
             BookingStatus.Status cancelledStatus);
+
+    @Query("SELECT b FROM Booking b "
+            + "JOIN FETCH b.status "
+            + "JOIN FETCH b.user "
+            + "JOIN FETCH b.accommodation a "
+            + "JOIN FETCH a.type "
+            + "JOIN FETCH a.amenities "
+            + "JOIN FETCH a.location WHERE b.id = :id")
+    Optional<Booking> findById(Long id);
 }
