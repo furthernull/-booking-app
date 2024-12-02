@@ -22,6 +22,10 @@ public class TelegramBotConfig {
 
     @Bean
     public TelegramBotsApi getTelegramBotsApi(TelegramBot bookingBot) throws TelegramApiException {
+        if (bookingBot.getBotToken().isEmpty()
+                || bookingBot.getBotUsername().isEmpty()) {
+            return null;
+        }
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(bookingBot);
         return botsApi;
