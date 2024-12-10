@@ -16,4 +16,8 @@ public interface TelegramRepository extends JpaRepository<TelegramChat, Long> {
 
     @Query("SELECT tg FROM TelegramChat tg JOIN FETCH tg.user WHERE tg.isSubscribed = TRUE")
     List<TelegramChat> findAllByIsSubscribedIsTrue();
+
+    @Query("SELECT tg FROM TelegramChat tg JOIN FETCH tg.user u "
+            + "JOIN u.roles r WHERE r.role = bookingapp.model.user.Role.RoleName.ADMIN")
+    List<TelegramChat> fetchAdminChats();
 }

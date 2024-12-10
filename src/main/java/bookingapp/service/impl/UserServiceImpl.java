@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
                 }
         );
         telegramChat.setSubscribed(true);
-        return telegramRepository.saveAndFlush(telegramChat);
+        return telegramRepository.save(telegramChat);
     }
 
     @Override
