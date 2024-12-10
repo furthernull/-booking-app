@@ -45,6 +45,6 @@ public interface BookingRepository
             + "JOIN FETCH a.amenities "
             + "JOIN FETCH a.type "
             + "JOIN a.location "
-            + "WHERE b.checkOutDate <= :date AND s.status != 'CANCELED'")
+            + "WHERE s.status NOT IN ('CANCELED', 'EXPIRED') AND b.checkOutDate <= :date")
     List<Booking> findExpiringBookings(LocalDate date);
 }
