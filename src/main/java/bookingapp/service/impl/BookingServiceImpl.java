@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookingServiceImpl implements BookingService {
     private static final BookingStatus.Status PENDING_STATUS = BookingStatus.Status.PENDING;
     private static final BookingStatus.Status CANCELLED_STATUS = BookingStatus.Status.CANCELLED;
+    private static final BookingStatus.Status EXPIRED_STATUS = BookingStatus.Status.EXPIRED;
     private final AccommodationRepository accommodationRepository;
     private final BookingMapper bookingMapper;
     private final BookingRepository bookingRepository;
@@ -123,6 +124,22 @@ public class BookingServiceImpl implements BookingService {
                 );
         booking.setStatus(status);
         bookingRepository.save(booking);
+    }
+
+    @Transactional
+    @Override
+    public void processExpiredBooking() {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        BookingStatus status = bookingStatusRepository.findByStatus(
+                EXPIRED_STATUS).orElseThrow(
+                    () -> new EntityNotFoundException(
+                        "Can't retrieve status PENDING from DB"));
+        List<Booking> expiredBookings = bookingRepository.findExpiringBookings(tomorrow);
+        expiredBookings.forEach(booking -> {
+            booking.setStatus(status);
+            bookingRepository.save(booking);
+        });
+        notificationService.sendNotification(expiredBookings);
     }
 
     private boolean isAccommodationAvailable(

@@ -37,4 +37,14 @@ public interface BookingRepository
             + "JOIN FETCH a.amenities "
             + "JOIN FETCH a.location WHERE b.id = :id")
     Optional<Booking> findById(Long id);
+
+    @Query("SELECT b FROM Booking b "
+            + "JOIN FETCH b.accommodation a "
+            + "JOIN FETCH b.user "
+            + "JOIN FETCH b.status s "
+            + "JOIN FETCH a.amenities "
+            + "JOIN FETCH a.type "
+            + "JOIN a.location "
+            + "WHERE s.status NOT IN ('CANCELED', 'EXPIRED') AND b.checkOutDate <= :date")
+    List<Booking> findExpiringBookings(LocalDate date);
 }

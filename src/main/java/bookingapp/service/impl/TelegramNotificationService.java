@@ -10,6 +10,7 @@ import bookingapp.repository.telegram.TelegramRepository;
 import bookingapp.service.NotificationService;
 import bookingapp.telegram.NotificationTemplates;
 import bookingapp.telegram.TelegramBot;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,8 @@ public class TelegramNotificationService implements NotificationService {
     @Override
     public void sendNotification(Long userId, Booking booking) {
         TelegramChat userChat = telegramRepository.findByUserId(userId).orElseThrow(
-                () -> new EntityNotFoundException("Can't fetch TelegramChat from DB: " + userId));
+                () -> new EntityNotFoundException(
+                        "Can't fetch TelegramChat from DB by user id: " + userId));
         if (userChat != null && userChat.isSubscribed()) {
             String notification = prepareNotification(userChat, booking);
             telegramBot.sendMessage(userChat.getChatId(), notification);
@@ -39,6 +41,22 @@ public class TelegramNotificationService implements NotificationService {
                 .forEach(c -> telegramBot.sendMessage(c.getChatId(), notification));
     }
 
+    @Override
+    public void sendNotification(List<Booking> expiringBookings) {
+        if (expiringBookings.isEmpty()) {
+            List<TelegramChat> admins = telegramRepository.fetchAdminChats();
+            admins.forEach(admin -> {
+                telegramBot.sendMessage(
+                        admin.getChatId(), NotificationTemplates.NO_EXPIRED_BOOKINGS_MESSAGE);
+            });
+        } else {
+            expiringBookings.forEach(booking -> {
+                sendNotification(booking.getUser().getId(), booking);
+                sendNotification(booking.getAccommodation());
+            });
+        }
+    }
+
     private String prepareNotification(TelegramChat userChat, Booking booking) {
         StringBuilder notification = new StringBuilder();
         switch (booking.getStatus().getStatus()) {
@@ -46,6 +64,8 @@ public class TelegramNotificationService implements NotificationService {
                     NotificationTemplates.NOTIFICATION_PENDING_TEMPLATE);
             case CANCELLED -> notification.append(
                     NotificationTemplates.NOTIFICATION_CANCEL_TEMPLATE);
+            case EXPIRED -> notification.append(
+                    NotificationTemplates.NOTIFICATION_EXPIRED_TEMPLATE);
             default -> notification.append(
                     NotificationTemplates.NOTIFICATION_DEFAULT_TEMPLATE);
         }

@@ -20,4 +20,6 @@ public interface BookingService {
     BookingResponseDto updateBooking(Long id, Long userId, BookingUpdateRequestDto requestDto);
 
     void cancelBooking(Long id, Long userId);
+
+    void processExpiredBooking();
 }

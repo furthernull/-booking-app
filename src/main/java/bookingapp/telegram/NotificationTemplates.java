@@ -12,6 +12,8 @@ public class NotificationTemplates {
             = "Thank you for your booking, %s %s!\n\n";
     public static final String NOTIFICATION_CANCEL_TEMPLATE
             = "%s %s, you booking was cancelled!\n\nBooking details:\n";
+    public static final String NOTIFICATION_EXPIRED_TEMPLATE
+            = "%s %s, you booking will expiring tomorrow!\n\n";
     public static final String NOTIFICATION_DEFAULT_TEMPLATE
             = "%s, %s!\n\n";
     public static final String NOTIFICATION_BOOKING_DETAILS_TEMPLATE
@@ -19,4 +21,5 @@ public class NotificationTemplates {
     public static final String NOTIFICATION_ACCOMMODATION_DETAILS_TEMPLATE
             = "Accommodation details:\n%s, %s\nAmenities: %s\nLocation:\n%s";
     public static final String NOTIFICATION_ADDRESS_TEMPLATE = "%s,\n%s, %s %s, %s";
+    public static final String NO_EXPIRED_BOOKINGS_MESSAGE = "No expired bookings today!";
 }
