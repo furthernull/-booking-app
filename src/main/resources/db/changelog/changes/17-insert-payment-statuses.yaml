@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-payment-statuses
+      author: dmytrosokolovskyi
+      changes:
+        - insert:
+            tableName: payment_statuses
+            columns:
+              - column:
+                  name: status
+                  value: PENDING
+        - insert:
+            tableName: payment_statuses
+            columns:
+              - column:
+                  name: status
+                  value: PAID
