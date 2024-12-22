@@ -28,6 +28,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+        Map<String, Object> body = fillResponseBody(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(AccommodationAvailabilityException.class)
     protected ResponseEntity<Object> handleAccommodationAvailabilityException(
             AccommodationAvailabilityException ex
