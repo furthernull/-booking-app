@@ -89,6 +89,20 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(body, headers, status);
     }
 
+    @ExceptionHandler(StripeServiceException.class)
+    protected ResponseEntity<Object> handleStripeServiceException(StripeServiceException ex) {
+        Map<String, Object> body =
+                fillResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(UrlCreationException.class)
+    protected ResponseEntity<Object> handleUrlCreationException(UrlCreationException ex) {
+        Map<String, Object> body =
+                fillResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     private Map<String, Object> fillResponseBody(HttpStatus status, String message) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
