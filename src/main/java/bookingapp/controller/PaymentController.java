@@ -54,4 +54,15 @@ public class PaymentController {
     ) {
         return paymentService.initiatePayment(user, requestDto);
     }
+
+    @GetMapping("/success/")
+    public PaymentResponse successPayment(@RequestParam String sessionId) {
+        return paymentService.handleSuccessPayment(sessionId);
+    }
+
+    @GetMapping("/cancel/")
+    public PaymentResponse cancelPayment(@RequestParam String sessionId) {
+        return paymentService.handleCancelPayment(sessionId);
+    }
+
 }

@@ -10,4 +10,8 @@ public interface PaymentService {
     List<PaymentResponse> getPayments(Long userId, Pageable pageable);
 
     PaymentResponse initiatePayment(User user, PaymentRequestDto requestDto);
+
+    PaymentResponse handleSuccessPayment(String sessionId);
+
+    PaymentResponse handleCancelPayment(String sessionId);
 }

@@ -5,6 +5,7 @@ import bookingapp.model.accommodation.Accommodation;
 import bookingapp.model.accommodation.Address;
 import bookingapp.model.accommodation.AmenityType;
 import bookingapp.model.booking.Booking;
+import bookingapp.model.payment.Payment;
 import bookingapp.model.telegram.TelegramChat;
 import bookingapp.repository.telegram.TelegramRepository;
 import bookingapp.service.NotificationService;
@@ -25,9 +26,7 @@ public class TelegramNotificationService implements NotificationService {
 
     @Override
     public void sendNotification(Long userId, Booking booking) {
-        TelegramChat userChat = telegramRepository.findByUserId(userId).orElseThrow(
-                () -> new EntityNotFoundException(
-                        "Can't fetch TelegramChat from DB by user id: " + userId));
+        TelegramChat userChat = getChat(userId);
         if (userChat != null && userChat.isSubscribed()) {
             String notification = prepareNotification(userChat, booking);
             telegramBot.sendMessage(userChat.getChatId(), notification);
@@ -54,6 +53,40 @@ public class TelegramNotificationService implements NotificationService {
                 sendNotification(booking.getUser().getId(), booking);
                 sendNotification(booking.getAccommodation());
             });
+        }
+    }
+
+    @Override
+    public void sendNotification(Payment payment) {
+        TelegramChat userChat = getChat(payment.getBooking().getUser().getId());
+        String message = prepareNotification(payment);
+        telegramBot.sendMessage(userChat.getChatId(), message);
+    }
+
+    private TelegramChat getChat(Long userId) {
+        return telegramRepository.findByUserId(userId).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "Can't fetch TelegramChat from DB by user id: " + userId));
+    }
+
+    private String prepareNotification(Payment payment) {
+        switch (payment.getStatus().getStatus()) {
+            case PAID -> {
+                return String.format(
+                        NotificationTemplates.PAYMENT_SUCCESSFUL_MESSAGE,
+                        payment.getBooking().getUser().getFirstName(),
+                        payment.getBooking().getUser().getLastName(),
+                        payment.getBooking().getId(),
+                        payment.getAmountToPay()
+                        );
+            }
+            default -> {
+                return String.format(
+                        NotificationTemplates.PAYMENT_CANCELED_MESSAGE,
+                        payment.getBooking().getUser().getFirstName(),
+                        payment.getBooking().getUser().getLastName()
+                );
+            }
         }
     }
 
