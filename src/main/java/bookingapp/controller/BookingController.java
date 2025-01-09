@@ -7,6 +7,8 @@ import bookingapp.dto.booking.BookingUpdateRequestDto;
 import bookingapp.model.booking.BookingStatus;
 import bookingapp.model.user.User;
 import bookingapp.service.BookingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Booking management", description = "Managing user's bookings")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/bookings")
@@ -35,6 +38,8 @@ public class BookingController {
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a new booking",
+            description = "permits the creation of new accommodation bookings")
     public BookingResponseDto create(
             @AuthenticationPrincipal User user,
             @RequestBody @Valid BookingRequestDto requestDto) {
@@ -43,6 +48,8 @@ public class BookingController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
+    @Operation(summary = "Get booking by id or/and status",
+            description = "retrieves bookings based on user id and their status")
     public List<BookingResponseDto> getBookingsByIdAndStatus(
             @RequestParam(name = "user_id", required = false) Long userId,
             @RequestParam(name = "status") BookingStatus.Status status,
@@ -52,6 +59,7 @@ public class BookingController {
 
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @GetMapping("/my")
+    @Operation(summary = "Get own bookings", description = "retrieve users bookings")
     public List<BookingResponseDto> getBookingsByUserId(
             @AuthenticationPrincipal User user,
             @PageableDefault Pageable pageable) {
@@ -60,6 +68,8 @@ public class BookingController {
 
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @GetMapping("/{id}")
+    @Operation(summary = "Get booking by id",
+            description = "provides information about a specific booking")
     public BookingResponseDto getBookingById(
             @AuthenticationPrincipal User user,
             @PathVariable Long id) {
@@ -68,6 +78,8 @@ public class BookingController {
 
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @PatchMapping("/{id}")
+    @Operation(summary = "Update booking by id",
+            description = "allows users to update their booking details")
     public BookingResponseDto updateBookingById(
             @PathVariable Long id,
             @RequestBody @Valid BookingUpdateRequestDto requestDto,
@@ -77,6 +89,8 @@ public class BookingController {
 
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @DeleteMapping("/{id}")
+    @Operation(summary = "Cancel booking by id",
+            description = "enables the cancellation of bookings")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancelBookingById(
             @PathVariable Long id,
