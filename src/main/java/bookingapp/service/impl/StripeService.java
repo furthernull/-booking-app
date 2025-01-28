@@ -20,7 +20,7 @@ public class StripeService {
     @Value("${base.url}")
     private String baseUrl;
 
-    Session createSession(Payment payment) {
+    public Session createSession(Payment payment) {
         SessionCreateParams params = SessionCreateParams.builder()
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
