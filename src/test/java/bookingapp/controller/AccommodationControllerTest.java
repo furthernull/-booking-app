@@ -1,5 +1,6 @@
 package bookingapp.controller;
 
+import static bookingapp.test.TestUtils.ACCOMMODATION_REQUEST_DTO_STUDIO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -83,23 +84,10 @@ class AccommodationControllerTest {
     @Test
     @DisplayName("Verify create() method")
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    @Sql(scripts = "classpath:database/accommodation/delete-added-accommodation.sql",
+            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void create_ValidAccommodationRequest_ReturnValidResponse() throws Exception {
-        AccommodationRequestDto request = new AccommodationRequestDto(
-                2L,
-                new AddressRequestDto(
-                        "125 Lesi Ukrainky Blvd",
-                        "Kyiv",
-                        "Kyiv",
-                        "12000",
-                        "Ukraine"),
-                "2 Bedroom",
-                Set.of(3L),
-                BigDecimal.valueOf(100.00),
-                1
-        );
-
-        String jsonRequest = objectMapper.writeValueAsString(request);
-        System.out.println(jsonRequest);
+        String jsonRequest = objectMapper.writeValueAsString(ACCOMMODATION_REQUEST_DTO_STUDIO);
         MvcResult result = mockMvc.perform(post("/accommodations")
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -163,7 +151,6 @@ class AccommodationControllerTest {
         );
 
         String jsonRequest = objectMapper.writeValueAsString(updateRequestDto);
-        System.out.println(jsonRequest);
         MvcResult result = mockMvc.perform(put("/accommodations/{id}", id)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -173,7 +160,6 @@ class AccommodationControllerTest {
         AccommodationDto accommodationDto = objectMapper.readValue(
                 result.getResponse().getContentAsString(), AccommodationDto.class);
         assertNotNull(accommodationDto);
-        System.out.println(accommodationDto);
     }
 
     @Test

@@ -1,6 +1,8 @@
 INSERT INTO addresses (id, address, city, state, zip_code, country, is_deleted) VALUES
     (1, 'Address', 'City', 'State', '12345', 'Country', false);
 
+SELECT SETVAL('addresses_id_seq', (SELECT MAX(id) FROM addresses));
+
 INSERT INTO accommodation_types (id, name) VALUES
                                                (1, 'APARTMENT'),
                                                (2, 'CONDO'),
@@ -19,6 +21,8 @@ INSERT INTO amenity_types (id, name) VALUES
 INSERT INTO accommodations (id, type_id, location_id, size, daily_rate, availability, is_deleted) VALUES
     (1, 1, 1, 'Studio', 10.00, 1, false),
     (2, 2, 1, '1 Bedroom,', 10.00, 1, false);
+
+SELECT SETVAL('accommodations_id_seq', (SELECT MAX(id) FROM accommodations));
 
 INSERT INTO accommodations_amenity_types (accommodation_id, amenity_id) VALUES
     (1, 1),

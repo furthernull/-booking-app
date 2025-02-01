@@ -21,14 +21,9 @@ import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Sql(scripts = {"classpath:database/accommodation/delete-accommodation-related-data.sql",
-        "classpath:database/user/delete-user-related-data.sql",
-        "classpath:database/booking/delete-booking-related-data.sql",
-        "classpath:database/accommodation/add-default-two-accommodation.sql",
-        "classpath:database/user/add-default-users.sql",},
+@Sql(scripts = "classpath:database/booking/delete-booking-related-data.sql",
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-@Sql(scripts = {"classpath:database/booking/add-default-booking-status.sql",
-        "classpath:database/booking/add-default-two-bookings.sql"},
+@Sql(scripts = "classpath:database/booking/add-default-two-bookings.sql",
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = {"classpath:database/booking/delete-booking-related-data.sql"},
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
