@@ -1,6 +1,5 @@
 package bookingapp.service.impl;
 
-import bookingapp.exception.EntityNotFoundException;
 import bookingapp.model.accommodation.Accommodation;
 import bookingapp.model.accommodation.Address;
 import bookingapp.model.accommodation.AmenityType;
@@ -12,6 +11,7 @@ import bookingapp.service.NotificationService;
 import bookingapp.telegram.NotificationTemplates;
 import bookingapp.telegram.TelegramBot;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +26,10 @@ public class TelegramNotificationService implements NotificationService {
 
     @Override
     public void sendNotification(Long userId, Booking booking) {
-        TelegramChat userChat = getChat(userId);
-        if (userChat != null && userChat.isSubscribed()) {
-            String notification = prepareNotification(userChat, booking);
-            telegramBot.sendMessage(userChat.getChatId(), notification);
+        Optional<TelegramChat> userChat = getChat(userId);
+        if (userChat.isPresent() && userChat.get().isSubscribed()) {
+            String notification = prepareNotification(userChat.get(), booking);
+            telegramBot.sendMessage(userChat.get().getChatId(), notification);
         }
     }
 
@@ -58,15 +58,13 @@ public class TelegramNotificationService implements NotificationService {
 
     @Override
     public void sendNotification(Payment payment) {
-        TelegramChat userChat = getChat(payment.getBooking().getUser().getId());
         String message = prepareNotification(payment);
-        telegramBot.sendMessage(userChat.getChatId(), message);
+        Optional<TelegramChat> userChat = getChat(payment.getBooking().getUser().getId());
+        userChat.ifPresent(c -> telegramBot.sendMessage(c.getChatId(), message));
     }
 
-    private TelegramChat getChat(Long userId) {
-        return telegramRepository.findByUserId(userId).orElseThrow(
-                () -> new EntityNotFoundException(
-                        "Can't fetch TelegramChat from DB by user id: " + userId));
+    private Optional<TelegramChat> getChat(Long userId) {
+        return telegramRepository.findByUserId(userId);
     }
 
     private String prepareNotification(Payment payment) {
