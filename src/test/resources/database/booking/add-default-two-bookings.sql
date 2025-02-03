@@ -55,7 +55,7 @@ SELECT SETVAL('users_id_seq', (SELECT MAX(id) FROM users));
 INSERT INTO booking_statuses (id, status) VALUES
     (1, 'PENDING'),
     (2, 'CONFIRMED'),
-    (3, 'CANCELED'),
+    (3, 'CANCELLED'),
     (4, 'EXPIRED');
 
 INSERT INTO bookings (id, check_in_date, check_out_date, accommodation_id, user_id, status_id, is_deleted) VALUES

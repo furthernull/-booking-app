@@ -229,12 +229,12 @@ public class TestUtils {
 
     public static final BookingStatus.Status STATUS_PENDING = BookingStatus.Status.PENDING;
     public static final BookingStatus.Status STATUS_CONFIRMED = BookingStatus.Status.CONFIRMED;
-    public static final BookingStatus.Status STATUS_CANCELED = BookingStatus.Status.CANCELLED;
+    public static final BookingStatus.Status STATUS_CANCELLED = BookingStatus.Status.CANCELLED;
     public static final BookingStatus.Status STATUS_EXPIRED = BookingStatus.Status.EXPIRED;
 
     public static final BookingStatus BOOKING_STATUS_PENDING = getBookingStatusPending();
     public static final BookingStatus BOOKING_STATUS_CONFIRMED = getBookingStatusConfirmed();
-    public static final BookingStatus BOOKING_STATUS_CANCELED = getBookingStatusCanceled();
+    public static final BookingStatus BOOKING_STATUS_CANCELLED = getBookingStatusCancelled();
     public static final BookingStatus BOOKING_STATUS_EXPIRED = getBookingStatusExpired();
 
     public static final LocalDate DEFAULT_CHECK_IN_DATE = LocalDate.now().plusDays(1);
@@ -546,10 +546,10 @@ public class TestUtils {
         return bookingStatus;
     }
 
-    private static BookingStatus getBookingStatusCanceled() {
+    private static BookingStatus getBookingStatusCancelled() {
         BookingStatus bookingStatus = new BookingStatus();
         bookingStatus.setId(DEFAULT_ID_THREE);
-        bookingStatus.setStatus(STATUS_CANCELED);
+        bookingStatus.setStatus(STATUS_CANCELLED);
         return bookingStatus;
     }
 
@@ -611,7 +611,7 @@ public class TestUtils {
         booking.setCheckOutDate(DEFAULT_CHECK_OUT_DATE);
         booking.setAccommodation(ACCOMMODATION_STUDIO);
         booking.setUser(USER_CUSTOMER);
-        booking.setStatus(BOOKING_STATUS_CANCELED);
+        booking.setStatus(BOOKING_STATUS_CANCELLED);
         return booking;
     }
 

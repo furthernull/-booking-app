@@ -5,7 +5,7 @@ import static bookingapp.test.TestUtils.BOOKING_CONDO_EXPIRED;
 import static bookingapp.test.TestUtils.BOOKING_FILTER_PARAMETERS;
 import static bookingapp.test.TestUtils.BOOKING_LIST;
 import static bookingapp.test.TestUtils.BOOKING_PAGE;
-import static bookingapp.test.TestUtils.BOOKING_STATUS_CANCELED;
+import static bookingapp.test.TestUtils.BOOKING_STATUS_CANCELLED;
 import static bookingapp.test.TestUtils.BOOKING_STATUS_EXPIRED;
 import static bookingapp.test.TestUtils.BOOKING_STATUS_PENDING;
 import static bookingapp.test.TestUtils.BOOKING_STUDIO_CANCELED;
@@ -17,7 +17,7 @@ import static bookingapp.test.TestUtils.BOOKING_STUDIO_UPDATED_RESPONSE_DTO;
 import static bookingapp.test.TestUtils.BOOKING_UPDATE_REQUEST_DTO;
 import static bookingapp.test.TestUtils.CONFLICTING_BOOKING;
 import static bookingapp.test.TestUtils.PAGEABLE;
-import static bookingapp.test.TestUtils.STATUS_CANCELED;
+import static bookingapp.test.TestUtils.STATUS_CANCELLED;
 import static bookingapp.test.TestUtils.STATUS_EXPIRED;
 import static bookingapp.test.TestUtils.STATUS_PENDING;
 import static bookingapp.test.TestUtils.USER_CUSTOMER;
@@ -82,7 +82,7 @@ class BookingServiceImplTest {
                 bookingRequestDto.accommodationId(),
                 bookingRequestDto.checkInDate(),
                 bookingRequestDto.checkOutDate(),
-                STATUS_CANCELED
+                STATUS_CANCELLED
         )).thenReturn(List.of());
         when(bookingMapper.toModel(bookingRequestDto)).thenReturn(booking);
         when(accommodationRepository.getReferenceById(
@@ -226,7 +226,7 @@ class BookingServiceImplTest {
                 BOOKING_STUDIO_PENDING.getAccommodation().getId(),
                 BOOKING_UPDATE_REQUEST_DTO.checkInDate(),
                 BOOKING_UPDATE_REQUEST_DTO.checkOutDate(),
-                STATUS_CANCELED
+                STATUS_CANCELLED
         )).thenReturn(List.of(CONFLICTING_BOOKING));
 
         AccommodationAvailabilityException exception = assertThrows(
@@ -245,15 +245,15 @@ class BookingServiceImplTest {
 
         when(bookingRepository.findByIdAndUserId(bookingId, userId))
                 .thenReturn(Optional.of(booking));
-        when(bookingStatusRepository.findByStatus(STATUS_CANCELED))
-                .thenReturn(Optional.of(BOOKING_STATUS_CANCELED));
+        when(bookingStatusRepository.findByStatus(STATUS_CANCELLED))
+                .thenReturn(Optional.of(BOOKING_STATUS_CANCELLED));
         when(bookingRepository.save(booking)).thenReturn(BOOKING_STUDIO_CANCELED);
 
         bookingService.cancelBooking(bookingId, userId);
 
         verify(bookingRepository).findByIdAndUserId(bookingId, userId);
         verify(bookingRepository).save(booking);
-        verify(bookingStatusRepository).findByStatus(STATUS_CANCELED);
+        verify(bookingStatusRepository).findByStatus(STATUS_CANCELLED);
         verifyNoMoreInteractions(bookingRepository, bookingStatusRepository);
     }
 
